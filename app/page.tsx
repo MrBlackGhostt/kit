@@ -3,7 +3,7 @@ import Image from "next/image";
 import { LazorkitProvider } from "@lazorkit/wallet";
 import { ConnectButton } from "./components/ConnectButton";
 import { TransferButton } from "./components/TransferButton";
-
+import HomePage from "./components/home";
 const CONFIG = {
   RPC_URL: "https://api.devnet.solana.com",
   PORTAL_URL: "https://portal.lazor.sh",
@@ -22,8 +22,7 @@ const Home = () => {
         paymasterUrl: CONFIG.PAYMASTER.paymasterUrl,
       }}
     >
-      <ConnectButton />
-      <TransferButton />
+      <HomePage />
     </LazorkitProvider>
   );
 };
