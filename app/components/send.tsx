@@ -1,8 +1,13 @@
+"use client";
 import { useMemo, useState } from "react";
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram } from "@solana/web3.js";
 import { useWallet } from "@lazorkit/wallet";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../components/ui/popover";
 
 const Send = () => {
   const { signAndSendTransaction, smartWalletPubkey } = useWallet();
