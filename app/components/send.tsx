@@ -60,9 +60,12 @@ const Send = () => {
       });
 
       const signature = await signAndSendTransaction({
-        instructions: [computeBudgetIx, transferIx],
+        instructions: [transferIx],
 
-        transactionOptions: { feeToken: "SOL" },
+        transactionOptions: {
+          feeToken: "SOL",
+          computeUnitLimit: 100000,
+        },
       });
 
       console.log(`✅ Transaction successful: ${signature}`);
