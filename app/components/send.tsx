@@ -15,6 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../components/ui/popover";
+import { Libre_Barcode_39 } from "next/font/google";
 
 //The transaction failed show installHook.js:1 Failed to sign and send transaction: Error: Transaction too large: 1303 > 1232
 
@@ -43,16 +44,20 @@ const Send = () => {
   }, [amountSol]);
 
   const transfer = async () => {
+        const retriex = 3;
+
+   while (retriex > 0) {
     try {
       if (!smartWalletPubkey) throw new Error("Wallet not connected");
       if (!toPubkey) throw new Error("Invalid recipient address");
       if (!lamports) throw new Error("Invalid amount");
 
-      setSending(true);
 
-      const computeBudgetIx = ComputeBudgetProgram.setComputeUnitLimit({
-        units: 400000,
-      });
+
+
+        setSending(true);
+
+    
       const transferIx = SystemProgram.transfer({
         fromPubkey: smartWalletPubkey,
         toPubkey,
@@ -64,7 +69,7 @@ const Send = () => {
 
         transactionOptions: {
           feeToken: "SOL",
-          computeUnitLimit: 200000,
+          computeUnitLimit: 500_000,
         },
       });
 
@@ -76,7 +81,7 @@ const Send = () => {
     } finally {
       setSending(false);
     }
-  };
+    }
 
   const disabled = sending || !smartWalletPubkey || !toPubkey || !lamports;
 
