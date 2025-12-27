@@ -1,12 +1,10 @@
 "use client";
-import { SendSolButton } from "./sendi";
 import { useWallet } from "@lazorkit/wallet";
 import { Connection, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
 import Send from "./send";
 import { ConnectButton } from "./ConnectButton";
-import { Cluster } from "cluster";
 
 const HomePage = () => {
   const [error, setError] = useState<string>("");
