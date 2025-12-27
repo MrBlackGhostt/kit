@@ -52,7 +52,7 @@ const Send = () => {
 
       const signature = await signAndSendTransaction({
         instructions: [transferIx],
-        transactionOptions: { feeToken: "SOL", computeUnitLimit: 5000 },
+        transactionOptions: { feeToken: "SOL", computeUnitLimit: 4849 },
       });
 
       console.log(`✅ Transaction successful: ${signature}`);
