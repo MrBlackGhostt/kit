@@ -15,14 +15,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../components/ui/popover";
-import { Libre_Barcode_39 } from "next/font/google";
-
-//The transaction failed show installHook.js:1 Failed to sign and send transaction: Error: Transaction too large: 1303 > 1232
 
 const Send = () => {
   const { signAndSendTransaction, smartWalletPubkey, isLoading } = useWallet();
-  //TODO  sending
-  //
+
   const [toAddress, setToAddress] = useState("");
   const [amountSol, setAmountSol] = useState("0.34");
   const [sending, setSending] = useState(false);
@@ -44,45 +40,64 @@ const Send = () => {
   }, [amountSol]);
 
   const transfer = async () => {
-        const retriex = 3;
+    const MAX_RETRIES = 3;
+    let attempt = 0;
 
-   while (retriex > 0) {
-    try {
-      if (!smartWalletPubkey) throw new Error("Wallet not connected");
-      if (!toPubkey) throw new Error("Invalid recipient address");
-      if (!lamports) throw new Error("Invalid amount");
-
-
-
+    while (attempt < MAX_RETRIES) {
+      try {
+        if (!smartWalletPubkey) throw new Error("Wallet not connected");
+        if (!toPubkey) throw new Error("Invalid recipient address");
+        if (!lamports) throw new Error("Invalid amount");
 
         setSending(true);
+        setError(""); // Clear previous errors
 
-    
-      const transferIx = SystemProgram.transfer({
-        fromPubkey: smartWalletPubkey,
-        toPubkey,
-        lamports,
-      });
+        const transferIx = SystemProgram.transfer({
+          fromPubkey: smartWalletPubkey,
+          toPubkey,
+          lamports,
+        });
 
-      const signature = await signAndSendTransaction({
-        instructions: [transferIx],
+        const signature = await signAndSendTransaction({
+          instructions: [transferIx],
+          transactionOptions: {
+            feeToken: "SOL",
+            computeUnitLimit: 500_000,
+          },
+        });
 
-        transactionOptions: {
-          feeToken: "SOL",
-          computeUnitLimit: 500_000,
-        },
-      });
+        console.log(`✅ Transaction successful: ${signature}`);
+        toast("✅ Transaction successful!");
+        setSending(false);
+        return; // ✅ Exit on success
+      } catch (e: any) {
+        attempt++;
 
-      console.log(`✅ Transaction successful: ${signature}`);
-      toast("✅ Transaction successful:");
-    } catch (e: any) {
-      setError(e?.message ?? "Transfer failed");
-      toast(`Transaction failed ${error}`);
-    } finally {
-      setSending(false);
+        // Check if error is retryable (blockhash expired)
+        const isRetryable =
+          e?.message?.includes("TransactionTooOld") ||
+          e?.message?.includes("blockhash") ||
+          e?.message?.includes("0x1783");
+
+        if (isRetryable && attempt < MAX_RETRIES) {
+          console.log(`🔄 Retry ${attempt}/${MAX_RETRIES}`);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          continue; // Retry
+        }
+
+        // Non-retryable error or max retries reached
+        const errorMsg = e?.message ?? "Transfer failed";
+        setError(errorMsg);
+        toast(`❌ Transaction failed: ${errorMsg}`);
+        setSending(false);
+        break; // Exit retry loop
+      }
     }
-    }
 
+    setSending(false);
+  };
+
+  // ✅ Move disabled logic outside transfer function
   const disabled = sending || !smartWalletPubkey || !toPubkey || !lamports;
 
   return (
@@ -130,13 +145,13 @@ const Send = () => {
 
           <button
             onClick={transfer}
-            disabled={isLoading}
+            disabled={disabled}
             className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-500 px-3 py-2 text-sm font-semibold text-white transition
                        hover:bg-indigo-400
                        disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLoading ? <Spinner /> : null}
-            {sending ? ` Sending...${amountSol} ` : `Send SOL ${amountSol}`}
+            {sending ? <Spinner /> : null}
+            {sending ? ` Sending... ${amountSol} SOL` : `Send ${amountSol} SOL`}
           </button>
 
           <div className="text-[11px] text-slate-500">
