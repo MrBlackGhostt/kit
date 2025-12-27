@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-
+import { Buffer } from "buffer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 // layout.tsx or providers.tsx
 if (typeof window !== "undefined") {
-  window.Buffer = window.Buffer || require("buffer").Buffer;
+  window.Buffer = window.Buffer || Buffer;
 }
 
 export default function RootLayout({

@@ -11,6 +11,8 @@ import {
   PopoverTrigger,
 } from "../../components/ui/popover";
 
+//The transaction failed show installHook.js:1 Failed to sign and send transaction: Error: Transaction too large: 1303 > 1232
+
 const Send = () => {
   const { signAndSendTransaction, smartWalletPubkey, isLoading } = useWallet();
   //TODO  sending
@@ -37,7 +39,6 @@ const Send = () => {
 
   const transfer = async () => {
     try {
-      setError("");
       if (!smartWalletPubkey) throw new Error("Wallet not connected");
       if (!toPubkey) throw new Error("Invalid recipient address");
       if (!lamports) throw new Error("Invalid amount");
@@ -52,15 +53,16 @@ const Send = () => {
 
       const signature = await signAndSendTransaction({
         instructions: [transferIx],
-        transactionOptions: { feeToken: "SOL", computeUnitLimit: 4849 },
+        transactionOptions: { feeToken: "SOL" },
       });
 
       console.log(`✅ Transaction successful: ${signature}`);
+      toast("✅ Transaction successful:");
     } catch (e: any) {
       setError(e?.message ?? "Transfer failed");
+      toast(`Transaction failed ${error}`);
     } finally {
       setSending(false);
-      toast(error ? error : "Transaction successful");
     }
   };
 
