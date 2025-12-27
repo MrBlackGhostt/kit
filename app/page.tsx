@@ -1,8 +1,6 @@
 "use client";
-import Image from "next/image";
 import { LazorkitProvider } from "@lazorkit/wallet";
-import { ConnectButton } from "./components/ConnectButton";
-import { TransferButton } from "./components/TransferButton";
+
 import HomePage from "./components/home";
 const CONFIG = {
   RPC_URL: "https://api.devnet.solana.com",
@@ -15,7 +13,6 @@ const CONFIG = {
 const Home = () => {
   return (
     <LazorkitProvider
-      isDebug={true}
       rpcUrl={CONFIG.RPC_URL}
       portalUrl={CONFIG.PORTAL_URL}
       paymasterConfig={{

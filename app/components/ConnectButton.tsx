@@ -1,5 +1,4 @@
 import { useWallet } from "@lazorkit/wallet";
-
 export function ConnectButton() {
   const { connect, disconnect, isConnected, isConnecting, wallet } =
     useWallet();
@@ -19,7 +18,6 @@ export function ConnectButton() {
         }
       >
         <span className="h-2 w-2 rounded-full bg-emerald-400" />
-        Disconnect ({wallet.smartWallet.slice(0, 6)}...)
       </button>
     );
   }
