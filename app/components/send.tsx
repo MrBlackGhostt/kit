@@ -2,7 +2,9 @@
 import { useMemo, useState } from "react";
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram } from "@solana/web3.js";
 import { useWallet } from "@lazorkit/wallet";
-
+//Shadcn ui
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 import {
   Popover,
   PopoverContent,
@@ -10,8 +12,9 @@ import {
 } from "../../components/ui/popover";
 
 const Send = () => {
-  const { signAndSendTransaction, smartWalletPubkey } = useWallet();
-
+  const { signAndSendTransaction, smartWalletPubkey, isLoading } = useWallet();
+  //TODO  sending
+  //
   const [toAddress, setToAddress] = useState("");
   const [amountSol, setAmountSol] = useState("0.34");
   const [sending, setSending] = useState(false);
@@ -49,7 +52,7 @@ const Send = () => {
 
       const signature = await signAndSendTransaction({
         instructions: [transferIx],
-        transactionOptions: { feeToken: "SOL", computeUnitLimit: 200_000 },
+        transactionOptions: { feeToken: "SOL", computeUnitLimit: 5000 },
       });
 
       console.log(`✅ Transaction successful: ${signature}`);
@@ -57,6 +60,7 @@ const Send = () => {
       setError(e?.message ?? "Transfer failed");
     } finally {
       setSending(false);
+      toast(error ? error : "Transaction successful");
     }
   };
 
@@ -66,6 +70,7 @@ const Send = () => {
     <Popover>
       <PopoverTrigger asChild>
         <button
+          disabled={isLoading || sending}
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-800 bg-indigo-500/15 px-3 py-2 text-sm font-semibold text-indigo-100 shadow-sm transition
                      hover:bg-indigo-500/25 hover:border-indigo-400/30
                      active:scale-[0.99]
@@ -106,12 +111,13 @@ const Send = () => {
 
           <button
             onClick={transfer}
-            disabled={disabled}
+            disabled={isLoading}
             className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-500 px-3 py-2 text-sm font-semibold text-white transition
                        hover:bg-indigo-400
                        disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {sending ? "Sending..." : "Send SOL"}
+            {isLoading ? <Spinner /> : null}
+            {sending ? ` Sending...${amountSol} ` : `Send SOL ${amountSol}`}
           </button>
 
           <div className="text-[11px] text-slate-500">
