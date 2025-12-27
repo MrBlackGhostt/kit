@@ -18,6 +18,7 @@ export function ConnectButton() {
         }
       >
         <span className="h-2 w-2 rounded-full bg-emerald-400" />
+        Connected
       </button>
     );
   }

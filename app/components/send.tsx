@@ -1,6 +1,11 @@
 "use client";
 import { useMemo, useState } from "react";
-import { LAMPORTS_PER_SOL, PublicKey, SystemProgram } from "@solana/web3.js";
+import {
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SystemProgram,
+  ComputeBudgetProgram,
+} from "@solana/web3.js";
 import { useWallet } from "@lazorkit/wallet";
 //Shadcn ui
 import { Spinner } from "@/components/ui/spinner";
@@ -45,6 +50,9 @@ const Send = () => {
 
       setSending(true);
 
+      const computeBudgetIx = ComputeBudgetProgram.setComputeUnitLimit({
+        units: 400000,
+      });
       const transferIx = SystemProgram.transfer({
         fromPubkey: smartWalletPubkey,
         toPubkey,
@@ -52,7 +60,8 @@ const Send = () => {
       });
 
       const signature = await signAndSendTransaction({
-        instructions: [transferIx],
+        instructions: [computeBudgetIx, transferIx],
+
         transactionOptions: { feeToken: "SOL" },
       });
 
