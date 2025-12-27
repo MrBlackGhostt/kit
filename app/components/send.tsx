@@ -64,7 +64,7 @@ const Send = () => {
 
         transactionOptions: {
           feeToken: "SOL",
-          computeUnitLimit: 100000,
+          computeUnitLimit: 200000,
         },
       });
 
