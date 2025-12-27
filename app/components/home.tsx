@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import Send from "./send";
 import { ConnectButton } from "./ConnectButton";
 
+import CodeBlock from "./CodeBlock";
+
 const HomePage = () => {
   const [error, setError] = useState<string>("");
   const [balance, setBalance] = useState<number>(0);
@@ -126,12 +128,24 @@ const HomePage = () => {
 
             {/* Optional footer row (UI-only) */}
             <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
+              <CodeBlock
+                code={`const transfer = async () => {
+  console.log("Hello World");
+};`}
+                language="typescript"
+              />{" "}
               <span>Tip: show address + copy button here</span>
               <span className="tabular-nums">Updated on render</span>
             </div>
           </>
         )}
       </div>
+      <CodeBlock
+        code={`const transfer = async () => {
+  console.log("Hello World");
+};`}
+        language="typescript"
+      />
     </div>
   );
 };
