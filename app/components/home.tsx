@@ -7,6 +7,9 @@ import Send from "./send";
 import { ConnectButton } from "./ConnectButton";
 
 import CodeBlock from "./CodeBlock";
+import PageTabs from "./PageTabs";
+
+import { CodeSnippet } from "@/lib/CodeSnippet";
 
 const HomePage = () => {
   const [error, setError] = useState<string>("");
@@ -54,6 +57,33 @@ const HomePage = () => {
     };
   }, [smartWalletPubkey, connection]);
   const sol = balance / LAMPORTS_PER_SOL;
+
+  const walletTabs = [
+    {
+      key: "page",
+      label: "Page.tsx",
+      code: CodeSnippet.page,
+      language: "typescript",
+    },
+    {
+      key: "home",
+      label: "HomePage.tsx",
+      code: CodeSnippet.homePage,
+      language: "typescript",
+    },
+    {
+      key: "connectButton",
+      label: "ConnectButton.tsx",
+      code: CodeSnippet.connectButton,
+      language: "typescript",
+    },
+    {
+      key: "send",
+      label: "SendButton.tsx",
+      code: CodeSnippet.send,
+      language: "typescript",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-100">
@@ -125,27 +155,17 @@ const HomePage = () => {
                 </button>
               </div>
             </div>
-
+            <div>
+              <PageTabs tabs={walletTabs} defaultTab="Page.tsx" />
+            </div>
             {/* Optional footer row (UI-only) */}
             <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
-              <CodeBlock
-                code={`const transfer = async () => {
-  console.log("Hello World");
-};`}
-                language="typescript"
-              />{" "}
               <span>Tip: show address + copy button here</span>
               <span className="tabular-nums">Updated on render</span>
             </div>
           </>
         )}
       </div>
-      <CodeBlock
-        code={`const transfer = async () => {
-  console.log("Hello World");
-};`}
-        language="typescript"
-      />
     </div>
   );
 };

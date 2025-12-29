@@ -2,6 +2,8 @@
 import { LazorkitProvider } from "@lazorkit/wallet";
 
 import HomePage from "./components/home";
+import { Code2Icon } from "lucide-react";
+import CodeBlock from "./components/CodeBlock";
 const CONFIG = {
   RPC_URL: "https://api.devnet.solana.com",
   PORTAL_URL: "https://portal.lazor.sh",
