@@ -1,6 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CodeBlock from "./CodeBlock";
-import { CodeUse } from "@/lib/CodeSnippet";
 
 interface CodeTab {
   key: string;
