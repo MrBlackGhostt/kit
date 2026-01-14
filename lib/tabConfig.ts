@@ -2,27 +2,27 @@ import { CodeSnippet } from "./CodeSnippet";
 
 export const walletTabs = [
   {
-    key: "page",
-    label: "Page.tsx",
-    code: CodeSnippet.page,
+    key: "setup",
+    label: "Setup",
+    code: CodeSnippet.setup,
     language: "typescript",
   },
   {
-    key: "home",
-    label: "HomePage.tsx",
-    code: CodeSnippet.homePage,
-    language: "typescript",
-  },
-  {
-    key: "connectButton",
-    label: "ConnectButton.tsx",
-    code: CodeSnippet.connectButton,
+    key: "connect",
+    label: "Connect",
+    code: CodeSnippet.connect,
     language: "typescript",
   },
   {
     key: "send",
-    label: "SendButton.tsx",
+    label: "Send Transaction",
     code: CodeSnippet.send,
+    language: "typescript",
+  },
+  {
+    key: "balance",
+    label: "Fetch Balance",
+    code: CodeSnippet.balance,
     language: "typescript",
   },
 ];
