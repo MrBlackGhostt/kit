@@ -105,10 +105,7 @@ const Send = () => {
       <PopoverTrigger asChild>
         <button
           disabled={isLoading || sending}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-800 bg-indigo-500/15 px-3 py-2 text-sm font-semibold text-indigo-100 shadow-sm transition
-                     hover:bg-indigo-500/25 hover:border-indigo-400/30
-                     active:scale-[0.99]
-                     focus:outline-none focus:ring-2 focus:ring-indigo-400/40"
+          className="text-sm font-medium text-slate-200 w-full"
         >
           Send
         </button>
@@ -117,45 +114,76 @@ const Send = () => {
       <PopoverContent
         align="end"
         sideOffset={10}
-        className="w-[92vw] max-w-sm rounded-2xl border border-slate-800 bg-slate-950/95 p-4 text-slate-100 shadow-xl"
+        className="w-[92vw] max-w-md rounded-2xl border border-slate-800 bg-slate-950/95 backdrop-blur-xl p-6 text-slate-100 shadow-2xl"
       >
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div>
-            <div className="text-xs text-slate-400">Recipient</div>
-            <input
-              value={toAddress}
-              onChange={(e) => setToAddress(e.target.value)}
-              placeholder="Public key"
-              className="mt-1 w-full rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-400/40"
-            />
+            <h3 className="text-lg font-semibold text-white mb-1">Send SOL</h3>
+            <p className="text-xs text-slate-400">Transfer SOL to any Solana address</p>
           </div>
 
           <div>
-            <div className="text-xs text-slate-400">Amount (SOL)</div>
+            <label className="text-xs font-medium text-slate-400 mb-2 block">
+              Recipient Address
+            </label>
+            <input
+              value={toAddress}
+              onChange={(e) => setToAddress(e.target.value)}
+              placeholder="Enter Solana address"
+              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all"
+            />
+            {toAddress && !toPubkey && (
+              <p className="text-xs text-red-400 mt-1.5">Invalid Solana address</p>
+            )}
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-slate-400 mb-2 block">
+              Amount (SOL)
+            </label>
             <input
               value={amountSol}
               onChange={(e) => setAmountSol(e.target.value)}
               inputMode="decimal"
-              placeholder="0.01"
-              className="mt-1 w-full rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-400/40"
+              placeholder="0.00"
+              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all"
             />
+            {amountSol && !lamports && (
+              <p className="text-xs text-red-400 mt-1.5">Invalid amount</p>
+            )}
           </div>
 
-          {error ? <div className="text-xs text-red-300">{error}</div> : null}
+          {error && (
+            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <p className="text-xs text-red-300">{error}</p>
+            </div>
+          )}
 
           <button
             onClick={transfer}
             disabled={disabled}
-            className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-500 px-3 py-2 text-sm font-semibold text-white transition
-                       hover:bg-indigo-400
-                       disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-3 text-sm font-semibold text-white transition-all duration-200
+                       hover:from-indigo-400 hover:to-purple-500
+                       disabled:cursor-not-allowed disabled:opacity-50 disabled:from-slate-700 disabled:to-slate-700
+                       active:scale-[0.98]"
           >
-            {sending ? <Spinner /> : null}
-            {sending ? ` Sending... ${amountSol} SOL` : `Send ${amountSol} SOL`}
+            {sending ? (
+              <>
+                <Spinner />
+                <span>Sending {amountSol} SOL...</span>
+              </>
+            ) : (
+              <span>Send {amountSol} SOL</span>
+            )}
           </button>
 
-          <div className="text-[11px] text-slate-500">
-            Uses Lazorkit smart wallet signing.
+          <div className="flex items-start gap-2 p-3 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
+            <svg className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Transaction is gasless and secured by your Lazorkit smart wallet with passkey authentication.
+            </p>
           </div>
         </div>
       </PopoverContent>

@@ -11,37 +11,57 @@ export const useBalance = () => {
   const [balance, setBalance] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const { smartWalletPubkey } = useWallet();
-
+  
   const connection = useMemo(
     () => new Connection(clusterApiUrl("devnet"), "confirmed"),
     [],
   );
+
   useEffect(() => {
     let cancelled = false;
-    console.log(`isLoading ${isLoading}`);
+    let intervalId: NodeJS.Timeout;
+    
     if (!smartWalletPubkey) {
       setBalance(0);
-      setIsLoading(!isLoading);
+      setIsLoading(false);
       return;
     }
-    const getBalance = async () => {
-      setIsLoading(true);
+    
+    const getBalance = async (showLoading = true) => {
+      // Only show loading on first fetch
+      if (showLoading && balance === 0) {
+        setIsLoading(true);
+      }
+      
       try {
         const bal = await connection.getBalance(smartWalletPubkey);
         if (!cancelled) {
           setBalance(bal);
         }
       } catch (error) {
-        return new Error("Error in getting the balance");
+        console.error("Error fetching balance:", error);
       } finally {
         if (!cancelled) setIsLoading(false);
       }
     };
-    getBalance();
+    
+    // Initial fetch
+    getBalance(true);
+    
+    // Poll for balance updates every 10 seconds
+    intervalId = setInterval(() => {
+      getBalance(false);
+    }, 10000);
+    
     return () => {
       cancelled = true;
+      if (intervalId) clearInterval(intervalId);
     };
-  }, []);
+  }, [smartWalletPubkey?.toBase58()]); // Use toBase58() to prevent object reference changes
 
-  return { sol: balance / LAMPORTS_PER_SOL, lamports: balance, isLoading };
+  return { 
+    sol: balance / LAMPORTS_PER_SOL, 
+    lamports: balance, 
+    isLoading 
+  };
 };
