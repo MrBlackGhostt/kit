@@ -1,7 +1,7 @@
 // components/BalanceCard.tsx
 
 import { QRCodeSVG } from "qrcode.react";
-import { Copy, QrCode, Send as SendIcon, ArrowDownToLine, ArrowUpFromLine, ShoppingBag } from "lucide-react";
+import { Copy, QrCode, ArrowDownToLine, ShoppingBag } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +28,11 @@ export const BalanceCard = ({ sol, lamports, isLoading, address }: any) => {
   const formatAddress = (addr: string) => {
     if (!addr) return "";
     return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+  };
+
+  const getExplorerUrl = (addr: string) => {
+    if (!addr) return "#";
+    return `https://explorer.solana.com/address/${addr}?cluster=devnet`;
   };
 
   return (
@@ -64,6 +69,17 @@ export const BalanceCard = ({ sol, lamports, isLoading, address }: any) => {
                 </span>
                 <Copy className={`w-4 h-4 transition-colors ${copied ? 'text-green-400' : 'text-slate-400 group-hover:text-indigo-400'}`} />
               </button>
+              <a
+                href={getExplorerUrl(address)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-indigo-500/50 transition-all duration-200 text-slate-400 hover:text-indigo-400"
+                title="View on Explorer"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
             </div>
           )}
         </div>
@@ -110,12 +126,7 @@ export const BalanceCard = ({ sol, lamports, isLoading, address }: any) => {
           </Dialog>
 
           {/* Send Button */}
-          <div className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-900/60 hover:border-indigo-500/30 transition-all duration-200">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              <ArrowUpFromLine className="w-5 h-5 text-indigo-400" />
-            </div>
-            <Send />
-          </div>
+          <Send />
 
           {/* Swap Button */}
           <button

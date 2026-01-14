@@ -57,7 +57,7 @@ export const useBalance = () => {
       cancelled = true;
       if (intervalId) clearInterval(intervalId);
     };
-  }, [smartWalletPubkey?.toBase58()]); // Use toBase58() to prevent object reference changes
+  }, [smartWalletPubkey?.toBase58(), connection]);
 
   return { 
     sol: balance / LAMPORTS_PER_SOL, 

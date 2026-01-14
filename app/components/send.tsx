@@ -4,25 +4,29 @@ import {
   LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
-  ComputeBudgetProgram,
 } from "@solana/web3.js";
 import { useWallet } from "@lazorkit/wallet";
-//Shadcn ui
+import { useBalance } from "../hooks/useBalance";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
+import { ArrowUpFromLine } from "lucide-react";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog";
 
 const Send = () => {
   const { signAndSendTransaction, smartWalletPubkey, isLoading } = useWallet();
+  const { sol: balance } = useBalance();
 
   const [toAddress, setToAddress] = useState("");
-  const [amountSol, setAmountSol] = useState("0.34");
+  const [amountSol, setAmountSol] = useState("0.01");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
   const toPubkey = useMemo(() => {
     try {
@@ -40,88 +44,86 @@ const Send = () => {
   }, [amountSol]);
 
   const transfer = async () => {
-    const MAX_RETRIES = 3;
-    let attempt = 0;
+    try {
+      if (!smartWalletPubkey) throw new Error("Wallet not connected");
+      if (!toPubkey) throw new Error("Invalid recipient address");
+      if (!lamports) throw new Error("Invalid amount");
 
-    while (attempt < MAX_RETRIES) {
-      try {
-        if (!smartWalletPubkey) throw new Error("Wallet not connected");
-        if (!toPubkey) throw new Error("Invalid recipient address");
-        if (!lamports) throw new Error("Invalid amount");
+      setSending(true);
+      setError("");
 
-        setSending(true);
-        setError(""); // Clear previous errors
+      console.log("Preparing transfer:", {
+        from: smartWalletPubkey.toBase58(),
+        to: toPubkey.toBase58(),
+        lamports,
+        sol: parseFloat(amountSol),
+      });
 
-        const transferIx = SystemProgram.transfer({
-          fromPubkey: smartWalletPubkey,
-          toPubkey,
-          lamports,
-        });
+      // Send transaction - Lazorkit handles the signing and paymaster
+      const signature = await signAndSendTransaction({
+        instructions: [
+          SystemProgram.transfer({
+            fromPubkey: smartWalletPubkey,
+            toPubkey,
+            lamports,
+          }),
+        ],
+      });
 
-        const signature = await signAndSendTransaction({
-          instructions: [transferIx],
-          transactionOptions: {
-            feeToken: "SOL",
-            computeUnitLimit: 500_000,
-          },
-        });
-
-        console.log(`✅ Transaction successful: ${signature}`);
-        toast("✅ Transaction successful!");
-        setSending(false);
-        return; // ✅ Exit on success
-      } catch (e: any) {
-        attempt++;
-
-        // Check if error is retryable (blockhash expired)
-        const isRetryable =
-          e?.message?.includes("TransactionTooOld") ||
-          e?.message?.includes("blockhash") ||
-          e?.message?.includes("0x1783");
-
-        if (isRetryable && attempt < MAX_RETRIES) {
-          console.log(`🔄 Retry ${attempt}/${MAX_RETRIES}`);
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          continue; // Retry
-        }
-
-        // Non-retryable error or max retries reached
-        const errorMsg = e?.message ?? "Transfer failed";
-        setError(errorMsg);
-        toast(`❌ Transaction failed: ${errorMsg}`);
-        setSending(false);
-        break; // Exit retry loop
+      console.log(`✅ Transaction sent: ${signature}`);
+      console.log(`View on explorer: https://explorer.solana.com/tx/${signature}?cluster=devnet`);
+      
+      toast.success(`✅ Sent ${amountSol} SOL successfully!`);
+      
+      // Reset and close
+      setToAddress("");
+      setAmountSol("0.01");
+      setOpen(false);
+      setSending(false);
+    } catch (e: any) {
+      console.error("❌ Transaction failed:", e);
+      
+      let errorMsg = "Transaction failed";
+      
+      // Better error messages
+      if (e?.message?.includes("0x1")) {
+        errorMsg = "Insufficient lamports for rent exemption. Try sending at least 0.001 SOL more.";
+      } else if (e?.message?.includes("0x2")) {
+        errorMsg = "Custom program error 0x2. The recipient account may not exist or have enough rent. Try a smaller amount like 0.01 SOL.";
+      } else if (e?.message?.includes("0x3")) {
+        errorMsg = "The account you're sending to doesn't have enough for rent. Try sending at least 0.001 SOL.";
+      } else if (e?.message?.includes("User rejected") || e?.message?.includes("User denied")) {
+        errorMsg = "You cancelled the transaction";
+      } else if (e?.message) {
+        // Show the actual error message
+        errorMsg = e.message;
       }
+      
+      setError(errorMsg);
+      toast.error(`❌ ${errorMsg}`);
+      setSending(false);
     }
-
-    setSending(false);
   };
 
-  // ✅ Move disabled logic outside transfer function
   const disabled = sending || !smartWalletPubkey || !toPubkey || !lamports;
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          disabled={isLoading || sending}
-          className="text-sm font-medium text-slate-200 w-full"
-        >
-          Send
-        </button>
-      </PopoverTrigger>
-
-      <PopoverContent
-        align="end"
-        sideOffset={10}
-        className="w-[92vw] max-w-md rounded-2xl border border-slate-800 bg-slate-950/95 backdrop-blur-xl p-6 text-slate-100 shadow-2xl"
-      >
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-1">Send SOL</h3>
-            <p className="text-xs text-slate-400">Transfer SOL to any Solana address</p>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-900/60 hover:border-indigo-500/30 transition-all duration-200 w-full">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+            <ArrowUpFromLine className="w-5 h-5 text-indigo-400" />
           </div>
+          <span className="text-sm font-medium text-slate-200">Send</span>
+        </button>
+      </DialogTrigger>
 
+      <DialogContent className="bg-slate-950 border-slate-800 text-slate-100 max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-xl">Send SOL</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4 py-4">
           <div>
             <label className="text-xs font-medium text-slate-400 mb-2 block">
               Recipient Address
@@ -145,11 +147,16 @@ const Send = () => {
               value={amountSol}
               onChange={(e) => setAmountSol(e.target.value)}
               inputMode="decimal"
-              placeholder="0.00"
+              placeholder="0.01"
               className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all"
             />
             {amountSol && !lamports && (
               <p className="text-xs text-red-400 mt-1.5">Invalid amount</p>
+            )}
+            {balance !== undefined && (
+              <p className="text-xs text-slate-500 mt-1.5">
+                Available: {balance.toFixed(4)} SOL
+              </p>
             )}
           </div>
 
@@ -186,8 +193,8 @@ const Send = () => {
             </p>
           </div>
         </div>
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 };
 
