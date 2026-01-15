@@ -110,29 +110,29 @@ const Send = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-900/60 hover:border-indigo-500/30 transition-all duration-200 w-full">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-            <ArrowUpFromLine className="w-5 h-5 text-indigo-400" />
+        <button className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-900/60 hover:border-indigo-500/30 transition-all duration-200 w-full">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+            <ArrowUpFromLine className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
           </div>
-          <span className="text-sm font-medium text-slate-200">Send</span>
+          <span className="text-xs sm:text-sm font-medium text-slate-200">Send</span>
         </button>
       </DialogTrigger>
 
-      <DialogContent className="bg-slate-950 border-slate-800 text-slate-100 max-w-md">
+      <DialogContent className="bg-slate-950 border-slate-800 text-slate-100 max-w-[calc(100%-2rem)] sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl">Send SOL</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">Send SOL</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
           <div>
-            <label className="text-xs font-medium text-slate-400 mb-2 block">
+            <label className="text-xs font-medium text-slate-400 mb-1.5 sm:mb-2 block">
               Recipient Address
             </label>
             <input
               value={toAddress}
               onChange={(e) => setToAddress(e.target.value)}
               placeholder="Enter Solana address"
-              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all"
+              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all"
             />
             {toAddress && !toPubkey && (
               <p className="text-xs text-red-400 mt-1.5">Invalid Solana address</p>
@@ -140,7 +140,7 @@ const Send = () => {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-400 mb-2 block">
+            <label className="text-xs font-medium text-slate-400 mb-1.5 sm:mb-2 block">
               Amount (SOL)
             </label>
             <input
@@ -148,7 +148,7 @@ const Send = () => {
               onChange={(e) => setAmountSol(e.target.value)}
               inputMode="decimal"
               placeholder="0.01"
-              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all"
+              className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all"
             />
             {amountSol && !lamports && (
               <p className="text-xs text-red-400 mt-1.5">Invalid amount</p>
@@ -161,15 +161,15 @@ const Send = () => {
           </div>
 
           {error && (
-            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20">
-              <p className="text-xs text-red-300">{error}</p>
+            <div className="p-2.5 sm:p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <p className="text-[11px] sm:text-xs text-red-300">{error}</p>
             </div>
           )}
 
           <button
             onClick={transfer}
             disabled={disabled}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-3 text-sm font-semibold text-white transition-all duration-200
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white transition-all duration-200
                        hover:from-indigo-400 hover:to-purple-500
                        disabled:cursor-not-allowed disabled:opacity-50 disabled:from-slate-700 disabled:to-slate-700
                        active:scale-[0.98]"
@@ -177,18 +177,19 @@ const Send = () => {
             {sending ? (
               <>
                 <Spinner />
-                <span>Sending {amountSol} SOL...</span>
+                <span className="hidden xs:inline">Sending {amountSol} SOL...</span>
+                <span className="xs:hidden">Sending...</span>
               </>
             ) : (
               <span>Send {amountSol} SOL</span>
             )}
           </button>
 
-          <div className="flex items-start gap-2 p-3 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
-            <svg className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex items-start gap-2 p-2.5 sm:p-3 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
+            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
+            <p className="text-[10px] sm:text-[11px] text-slate-400 leading-relaxed">
               Transaction is gasless and secured by your Lazorkit smart wallet with passkey authentication.
             </p>
           </div>

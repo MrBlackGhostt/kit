@@ -38,36 +38,36 @@ export const BalanceCard = ({ sol, lamports, isLoading, address }: any) => {
   return (
     <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
       {/* Balance Header */}
-      <div className="p-6 sm:p-8 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
           <div>
-            <p className="text-sm text-slate-400 mb-1">Total Balance</p>
-            <h2 className="text-4xl sm:text-5xl font-bold tabular-nums text-white transition-opacity duration-300">
+            <p className="text-xs sm:text-sm text-slate-400 mb-1">Total Balance</p>
+            <h2 className="text-3xl xs:text-4xl sm:text-5xl font-bold tabular-nums text-white transition-opacity duration-300">
               {isLoading ? (
                 <span className="text-slate-500">--</span>
               ) : (
                 <>
                   {sol.toFixed(4)}
-                  <span className="text-xl sm:text-2xl font-medium text-slate-400 ml-2">SOL</span>
+                  <span className="text-lg xs:text-xl sm:text-2xl font-medium text-slate-400 ml-2">SOL</span>
                 </>
               )}
             </h2>
-            <p className="text-sm text-slate-500 mt-1 tabular-nums transition-opacity duration-300">
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 tabular-nums transition-opacity duration-300">
               {lamports.toLocaleString()} lamports
             </p>
           </div>
           
           {/* Address Display */}
           {address && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={copyAddress}
-                className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-indigo-500/50 transition-all duration-200"
+                className="group flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-indigo-500/50 transition-all duration-200"
               >
-                <span className="font-mono text-sm text-slate-300">
+                <span className="font-mono text-xs sm:text-sm text-slate-300">
                   {formatAddress(address)}
                 </span>
-                <Copy className={`w-4 h-4 transition-colors ${copied ? 'text-green-400' : 'text-slate-400 group-hover:text-indigo-400'}`} />
+                <Copy className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors ${copied ? 'text-green-400' : 'text-slate-400 group-hover:text-indigo-400'}`} />
               </button>
               <a
                 href={getExplorerUrl(address)}
@@ -76,7 +76,7 @@ export const BalanceCard = ({ sol, lamports, isLoading, address }: any) => {
                 className="p-2 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-indigo-500/50 transition-all duration-200 text-slate-400 hover:text-indigo-400"
                 title="View on Explorer"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
@@ -86,36 +86,36 @@ export const BalanceCard = ({ sol, lamports, isLoading, address }: any) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="p-6 sm:p-8 border-t border-white/5">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="p-4 sm:p-6 md:p-8 border-t border-white/5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           {/* Receive Modal */}
           <Dialog>
             <DialogTrigger asChild>
-              <button className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-900/60 hover:border-indigo-500/30 transition-all duration-200">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                  <ArrowDownToLine className="w-5 h-5 text-green-400" />
+              <button className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-900/60 hover:border-indigo-500/30 transition-all duration-200">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <ArrowDownToLine className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
                 </div>
-                <span className="text-sm font-medium text-slate-200">Receive</span>
+                <span className="text-xs sm:text-sm font-medium text-slate-200">Receive</span>
               </button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-950 border-slate-800 text-slate-100 max-w-md">
+            <DialogContent className="bg-slate-950 border-slate-800 text-slate-100 max-w-[calc(100%-2rem)] sm:max-w-md">
               <DialogHeader>
-                <DialogTitle className="text-center text-xl">Receive SOL</DialogTitle>
+                <DialogTitle className="text-center text-lg sm:text-xl">Receive SOL</DialogTitle>
               </DialogHeader>
-              <div className="flex flex-col items-center space-y-6 py-4">
-                <div className="p-4 bg-white rounded-2xl shadow-lg">
-                  <QRCodeSVG value={address || ""} size={200} />
+              <div className="flex flex-col items-center space-y-4 sm:space-y-6 py-3 sm:py-4">
+                <div className="p-3 sm:p-4 bg-white rounded-2xl shadow-lg">
+                  <QRCodeSVG value={address || ""} size={typeof window !== 'undefined' && window.innerWidth < 400 ? 160 : 200} />
                 </div>
                 <div className="w-full space-y-2">
                   <p className="text-xs text-slate-400 text-center">Your Wallet Address</p>
                   <div
                     onClick={copyAddress}
-                    className="flex items-center justify-between p-4 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:bg-slate-800 hover:border-indigo-500/30 transition-all duration-200"
+                    className="flex items-center justify-between p-3 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:bg-slate-800 hover:border-indigo-500/30 transition-all duration-200"
                   >
-                    <span className="text-xs font-mono break-all text-slate-300">
+                    <span className="text-[10px] xs:text-xs font-mono break-all text-slate-300">
                       {address}
                     </span>
-                    <Copy className={`ml-3 flex-shrink-0 w-4 h-4 transition-colors ${copied ? 'text-green-400' : 'text-slate-400'}`} />
+                    <Copy className={`ml-2 sm:ml-3 flex-shrink-0 w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors ${copied ? 'text-green-400' : 'text-slate-400'}`} />
                   </div>
                   {copied && (
                     <p className="text-xs text-green-400 text-center">Copied!</p>
@@ -131,39 +131,39 @@ export const BalanceCard = ({ sol, lamports, isLoading, address }: any) => {
           {/* Swap Button */}
           <button
             disabled
-            className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-950/40 opacity-60 cursor-not-allowed"
+            className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border border-slate-800 bg-slate-950/40 opacity-60 cursor-not-allowed"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-              <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
               </svg>
             </div>
-            <span className="text-sm font-medium text-slate-400">Swap</span>
+            <span className="text-xs sm:text-sm font-medium text-slate-400">Swap</span>
           </button>
 
           {/* Buy Button */}
           <button
             disabled
-            className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-950/40 opacity-60 cursor-not-allowed"
+            className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border border-slate-800 bg-slate-950/40 opacity-60 cursor-not-allowed"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500/20 to-rose-500/20 flex items-center justify-center">
-              <ShoppingBag className="w-5 h-5 text-pink-400" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-pink-500/20 to-rose-500/20 flex items-center justify-center">
+              <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-pink-400" />
             </div>
-            <span className="text-sm font-medium text-slate-400">Buy</span>
+            <span className="text-xs sm:text-sm font-medium text-slate-400">Buy</span>
           </button>
         </div>
 
         {/* Info Banner */}
-        <div className="mt-6 p-4 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
-          <div className="flex items-start gap-3">
-            <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg className="w-3 h-3 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+        <div className="mt-4 sm:mt-6 p-3 sm:p-4 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
+          <div className="flex items-start gap-2 sm:gap-3">
+            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
             <div>
-              <p className="text-sm font-medium text-indigo-300 mb-1">Gasless Transactions</p>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs sm:text-sm font-medium text-indigo-300 mb-0.5 sm:mb-1">Gasless Transactions</p>
+              <p className="text-[11px] sm:text-xs text-slate-400 leading-relaxed">
                 Your smart wallet is powered by Lazorkit. Send SOL without worrying about transaction fees.
               </p>
             </div>
